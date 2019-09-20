@@ -131,42 +131,23 @@ self.addEventListener("activate", function (e) {
   console.log("Activating the service worker!");
   event.waitUntil(self.clients.claim());
 });
-
-function cacheFirst(req) {
-  caches.open(cacheName).then(function (cache) {
-    cache.match(req).then(function (cached) {
-      return cached || fetch(req);
-    });
-  });
-}
-
-function networkAndCache(req) {
-  return caches.open(cacheName).then(function (cache) {
-    fetch(req).then(function (fresh) {
-      cache.put(req, fresh.clone());
-      return fresh;
-    }).catch(function (err) {
-      console.error("Fetch error", err);
-    });
-  }).catch(function (err) {
-    console.error("Caches error", err);
-  });
-}
-
 self.addEventListener("fetch", function (event) {
   event.respondWith(caches.match(event.request, {
     ignoreSearch: true
   }).then(function (response) {
-    return response || fetch(event.request);
+    return response || fetch(event.request).then(function (res) {
+      return caches.open(cacheName).then(function (cache) {
+        cache.put(event.request.url, res.clone()); //save the response for future
+
+        return res; // return the fetched data
+      });
+    }).catch(function (err) {
+      // fallback mechanism
+      return caches.open(cacheName).then(function (cache) {
+        return cache.match(urlsToCache);
+      });
+    });
   }));
-}); // function(e) {
-//   const req = e.request;
-//   const url = new URL(req.url);
-//   if (url.origin === location.origin) {
-//     return e.respondWith(cacheFirst(req));
-//   } else {
-//     return e.respondWith(networkAndCache(req));
-//   }
-// });
+});
 },{}]},{},["NqYy"], null)
 //# sourceMappingURL=/sw.js.map

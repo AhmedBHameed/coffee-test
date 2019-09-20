@@ -30,7 +30,22 @@ self.addEventListener("activate", e => {
 self.addEventListener("fetch", event => {
   event.respondWith(
     caches.match(event.request, { ignoreSearch: true }).then(response => {
-      return response || fetch(event.request);
+      return (
+        response ||
+        fetch(event.request)
+          .then(function(res) {
+            return caches.open(cacheName).then(function(cache) {
+              cache.put(event.request.url, res.clone()); //save the response for future
+              return res; // return the fetched data
+            });
+          })
+          .catch(function(err) {
+            // fallback mechanism
+            return caches.open(cacheName).then(function(cache) {
+              return cache.match(urlsToCache);
+            });
+          })
+      );
     })
   );
 });
