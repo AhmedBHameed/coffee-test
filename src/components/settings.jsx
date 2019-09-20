@@ -53,16 +53,6 @@ const CupSettings = styled.div`
   }
 `;
 
-function CupInput(props) {
-  <input
-    type="number"
-    defaultValue={props.nbCups}
-    min="1"
-    max="8"
-    onChange={props.onChange}
-  ></input>;
-}
-
 export default class Settings extends React.Component {
   constructor(props) {
     super(props);

@@ -123,8 +123,7 @@ export default class Game extends React.Component {
       restartGame,
       defaultTimeout,
       gameover,
-      nbCups,
-      highestScore
+      nbCups
     } = this.state;
 
     return (

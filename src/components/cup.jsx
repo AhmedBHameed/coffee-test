@@ -31,6 +31,11 @@ const Img = styled.img`
   width: 70px;
 `;
 
+const NewScore = styled.h6`
+  color: orange;
+  margin: 0;
+`;
+
 export default class Cup extends React.Component {
   constructor(props) {
     super(props);
@@ -41,7 +46,8 @@ export default class Cup extends React.Component {
       timer: 0,
       stepTimer: 0,
       assetArray: [cup_empty, cup_fill_1, cup_fill_2, cup_full, cup_too_full],
-      overflow: false
+      overflow: false,
+      breakingScore: false
     };
     this.gameScore = 0;
     this.setTimeInterval();
@@ -101,13 +107,8 @@ export default class Cup extends React.Component {
     return Math.random() * this.state.coeff;
   }
 
-  pauseTimer() {
-    clearTimeout(this.stepChrono);
-    clearInterval(this.chrono);
-    this.setState({ timeout: this.state.timeout - this.stepChrono });
-  }
-
   fillCup() {
+    this.checkForBreakingScore();
     if (this.state.assetNumber + 1 == this.state.assetArray.length) {
       this.setState({ overflow: true });
       clearInterval(this.chrono);
@@ -120,6 +121,17 @@ export default class Cup extends React.Component {
       });
       this.setState({ stepTimer: 0 });
       this.setTimeout();
+    }
+  }
+
+  checkForBreakingScore() {
+    if (
+      !!localStorage.getItem("highScore") &&
+      this.gameScore > (+localStorage.getItem("highScore") || 0)
+    ) {
+      this.setState({
+        breakingScore: true
+      });
     }
   }
 
@@ -140,12 +152,14 @@ export default class Cup extends React.Component {
   }
 
   render() {
+    const { breakingScore } = this.state;
     return (
       <CupWrapper>
         <CupButton onClick={this.emptyCup}>
           <Img src={this.state.assetArray[this.state.assetNumber]} />
         </CupButton>
         <TimerWrapper>{this.renderTimer()}s</TimerWrapper>
+        {breakingScore && <NewScore>Breaking score.</NewScore>}
       </CupWrapper>
     );
   }

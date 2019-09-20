@@ -3,22 +3,10 @@ import ReactDOM from "react-dom";
 import styled from "styled-components";
 import Game from "./game";
 
-// Service worker
-import * as serviceWorker from "./serviceWorker";
-
 const StyledText = styled.p`
   color: darkgoldenrod;
   text-decoration: underline;
 `;
-function Settings() {
-  return (
-    <div>
-      <h5>Number of cups:</h5>
-      <input type="number" value="1" min="1" max="8"></input>
-      <button>Start</button>
-    </div>
-  );
-}
 const App = () => (
   <div>
     <h1>React parcel starter</h1>
@@ -28,12 +16,33 @@ const App = () => (
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
-// Hot Module Replacement
+function registerSW() {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function() {
+      try {
+        navigator.serviceWorker
+          .register("./sw.js")
+          .then(function(registration) {
+            console.log(
+              "SW successfully registered on scope",
+              registration.scope
+            );
+          })
+          .catch(function(err) {
+            console.error("Something went wrong with SW!!", err);
+          });
+      } catch (e) {
+        console.error("SW registration failed!", e);
+      }
+    });
+  }
+}
+
 if (module.hot) {
   //dev mode
   ReactDOM.render(<Game />, document.getElementById("root"));
   module.hot.accept();
 } else {
   // production mode
-  serviceWorker.register();
+  registerSW();
 }

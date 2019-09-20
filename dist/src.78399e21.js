@@ -36026,16 +36026,6 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 
 var CupSettings = _styledComponents.default.div(_templateObject());
 
-function CupInput(props) {
-  _react.default.createElement("input", {
-    type: "number",
-    defaultValue: props.nbCups,
-    min: "1",
-    max: "8",
-    onChange: props.onChange
-  });
-}
-
 var Settings =
 /*#__PURE__*/
 function (_React$Component) {
@@ -36106,8 +36096,6 @@ exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
-var _styledComponents = _interopRequireDefault(require("styled-components"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -36170,7 +36158,7 @@ function (_React$Component) {
 }(_react.default.Component);
 
 exports.default = Description;
-},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js"}],"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -36512,6 +36500,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
+function _templateObject5() {
+  var data = _taggedTemplateLiteral(["\n  color: orange;\n  margin: 0;\n"]);
+
+  _templateObject5 = function _templateObject5() {
+    return data;
+  };
+
+  return data;
+}
+
 function _templateObject4() {
   var data = _taggedTemplateLiteral(["\n  width: 70px;\n"]);
 
@@ -36562,6 +36560,8 @@ var TimerWrapper = _styledComponents.default.span(_templateObject3());
 
 var Img = _styledComponents.default.img(_templateObject4());
 
+var NewScore = _styledComponents.default.h6(_templateObject5());
+
 var Cup =
 /*#__PURE__*/
 function (_React$Component) {
@@ -36580,7 +36580,8 @@ function (_React$Component) {
       timer: 0,
       stepTimer: 0,
       assetArray: [_cup_empty.default, _cup_fill_.default, _cup_fill_2.default, _cup_full.default, _cup_too_full.default],
-      overflow: false
+      overflow: false,
+      breakingScore: false
     };
     _this.gameScore = 0;
 
@@ -36669,17 +36670,10 @@ function (_React$Component) {
       return Math.random() * this.state.coeff;
     }
   }, {
-    key: "pauseTimer",
-    value: function pauseTimer() {
-      clearTimeout(this.stepChrono);
-      clearInterval(this.chrono);
-      this.setState({
-        timeout: this.state.timeout - this.stepChrono
-      });
-    }
-  }, {
     key: "fillCup",
     value: function fillCup() {
+      this.checkForBreakingScore();
+
       if (this.state.assetNumber + 1 == this.state.assetArray.length) {
         this.setState({
           overflow: true
@@ -36696,6 +36690,15 @@ function (_React$Component) {
           stepTimer: 0
         });
         this.setTimeout();
+      }
+    }
+  }, {
+    key: "checkForBreakingScore",
+    value: function checkForBreakingScore() {
+      if (!!localStorage.getItem("highScore") && this.gameScore > (+localStorage.getItem("highScore") || 0)) {
+        this.setState({
+          breakingScore: true
+        });
       }
     }
   }, {
@@ -36720,11 +36723,12 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
+      var breakingScore = this.state.breakingScore;
       return _react.default.createElement(CupWrapper, null, _react.default.createElement(CupButton, {
         onClick: this.emptyCup
       }, _react.default.createElement(Img, {
         src: this.state.assetArray[this.state.assetNumber]
-      })), _react.default.createElement(TimerWrapper, null, this.renderTimer(), "s"));
+      })), _react.default.createElement(TimerWrapper, null, this.renderTimer(), "s"), breakingScore && _react.default.createElement(NewScore, null, "Breaking score."));
     }
   }]);
 
@@ -37114,8 +37118,7 @@ function (_React$Component) {
           restartGame = _this$state.restartGame,
           defaultTimeout = _this$state.defaultTimeout,
           gameover = _this$state.gameover,
-          nbCups = _this$state.nbCups,
-          highestScore = _this$state.highestScore;
+          nbCups = _this$state.nbCups;
       return _react.default.createElement(FlexBoxWrapper, null, _react.default.createElement(_navBar.default, {
         imgSrc: _cup_too_full.default,
         gameover: gameover
@@ -37137,143 +37140,7 @@ function (_React$Component) {
 }(_react.default.Component);
 
 exports.default = Game;
-},{"react":"../node_modules/react/index.js","./components/settings.jsx":"components/settings.jsx","./components/description.jsx":"components/description.jsx","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./stylesheet/game.css":"stylesheet/game.css","./components/container":"components/container.jsx","./components/flex-wrapper":"components/flex-wrapper.jsx","./components/nav-bar":"components/nav-bar.jsx","./components/game-wapper":"components/game-wapper.jsx","./assets/cup_too_full.png":"assets/cup_too_full.png"}],"serviceWorker.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.register = register;
-exports.unregister = unregister;
-
-/**
- *
- *
- *
- * Not my implementation !!!!!
- * Not my implementation !!!!!
- * Not my implementation !!!!!
- * Not my implementation !!!!!
- * Not my implementation !!!
- *
- * As i did not get deep with PWA, i can't make it in that short time so will focus on the app layout
- *
- *
- *
- *
- */
-// This optional code is used to register a service worker.
-// register() is not called by default.
-// This lets the app load faster on subsequent visits in production, and gives
-// it offline capabilities. However, it also means that developers (and users)
-// will only see deployed updates on subsequent visits to a page, after all the
-// existing tabs open on the page have been closed, since previously cached
-// resources are updated in the background.
-// To learn more about the benefits of this model and instructions on how to
-// opt-in, read https://bit.ly/CRA-PWA
-var isLocalhost = Boolean(window.location.hostname === "localhost" || // [::1] is the IPv6 localhost address.
-window.location.hostname === "[::1]" || // 127.0.0.1/8 is considered localhost for IPv4.
-window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/));
-
-function register(config) {
-  if ("development" === "production" && "serviceWorker" in navigator) {
-    // The URL constructor is available in all browsers that support SW.
-    var publicUrl = new URL(undefined, window.location.href);
-
-    if (publicUrl.origin !== window.location.origin) {
-      // Our service worker won't work if PUBLIC_URL is on a different origin
-      // from what our page is served on. This might happen if a CDN is used to
-      // serve assets; see https://github.com/facebook/create-react-app/issues/2374
-      return;
-    }
-
-    window.addEventListener("load", function () {
-      var swUrl = "".concat(undefined, "/service-worker.js");
-
-      if (isLocalhost) {
-        // This is running on localhost. Let's check if a service worker still exists or not.
-        checkValidServiceWorker(swUrl, config); // Add some additional logging to localhost, pointing developers to the
-        // service worker/PWA documentation.
-
-        navigator.serviceWorker.ready.then(function () {
-          console.log("This web app is being served cache-first by a service " + "worker. To learn more, visit https://bit.ly/CRA-PWA");
-        });
-      } else {
-        // Is not localhost. Just register service worker
-        registerValidSW(swUrl, config);
-      }
-    });
-  }
-}
-
-function registerValidSW(swUrl, config) {
-  navigator.serviceWorker.register(swUrl).then(function (registration) {
-    registration.onupdatefound = function () {
-      var installingWorker = registration.installing;
-
-      if (installingWorker == null) {
-        return;
-      }
-
-      installingWorker.onstatechange = function () {
-        if (installingWorker.state === "installed") {
-          if (navigator.serviceWorker.controller) {
-            // At this point, the updated precached content has been fetched,
-            // but the previous service worker will still serve the older
-            // content until all client tabs are closed.
-            console.log("New content is available and will be used when all " + "tabs for this page are closed. See https://bit.ly/CRA-PWA."); // Execute callback
-
-            if (config && config.onUpdate) {
-              config.onUpdate(registration);
-            }
-          } else {
-            // At this point, everything has been precached.
-            // It's the perfect time to display a
-            // "Content is cached for offline use." message.
-            console.log("Content is cached for offline use."); // Execute callback
-
-            if (config && config.onSuccess) {
-              config.onSuccess(registration);
-            }
-          }
-        }
-      };
-    };
-  }).catch(function (error) {
-    console.error("Error during service worker registration:", error);
-  });
-}
-
-function checkValidServiceWorker(swUrl, config) {
-  // Check if the service worker can be found. If it can't reload the page.
-  fetch(swUrl).then(function (response) {
-    // Ensure service worker exists, and that we really are getting a JS file.
-    var contentType = response.headers.get("content-type");
-
-    if (response.status === 404 || contentType != null && contentType.indexOf("javascript") === -1) {
-      // No service worker found. Probably a different app. Reload the page.
-      navigator.serviceWorker.ready.then(function (registration) {
-        registration.unregister().then(function () {
-          window.location.reload();
-        });
-      });
-    } else {
-      // Service worker found. Proceed as normal.
-      registerValidSW(swUrl, config);
-    }
-  }).catch(function () {
-    console.log("No internet connection found. App is running in offline mode.");
-  });
-}
-
-function unregister() {
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.ready.then(function (registration) {
-      registration.unregister();
-    });
-  }
-}
-},{}],"index.jsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./components/settings.jsx":"components/settings.jsx","./components/description.jsx":"components/description.jsx","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./stylesheet/game.css":"stylesheet/game.css","./components/container":"components/container.jsx","./components/flex-wrapper":"components/flex-wrapper.jsx","./components/nav-bar":"components/nav-bar.jsx","./components/game-wapper":"components/game-wapper.jsx","./assets/cup_too_full.png":"assets/cup_too_full.png"}],"index.jsx":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -37283,12 +37150,6 @@ var _reactDom = _interopRequireDefault(require("react-dom"));
 var _styledComponents = _interopRequireDefault(require("styled-components"));
 
 var _game = _interopRequireDefault(require("./game"));
-
-var serviceWorker = _interopRequireWildcard(require("./serviceWorker"));
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37306,21 +37167,27 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 
 var StyledText = _styledComponents.default.p(_templateObject());
 
-function Settings() {
-  return _react.default.createElement("div", null, _react.default.createElement("h5", null, "Number of cups:"), _react.default.createElement("input", {
-    type: "number",
-    value: "1",
-    min: "1",
-    max: "8"
-  }), _react.default.createElement("button", null, "Start"));
-}
-
 var App = function App() {
   return _react.default.createElement("div", null, _react.default.createElement("h1", null, "React parcel starter"), _react.default.createElement(StyledText, null, "This text is styled with styled components :)"));
 };
 
-_reactDom.default.render(_react.default.createElement(App, null), document.getElementById("root")); // Hot Module Replacement
+_reactDom.default.render(_react.default.createElement(App, null), document.getElementById("root"));
 
+function registerSW() {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      try {
+        navigator.serviceWorker.register("/sw.js").then(function (registration) {
+          console.log("SW successfully registered on scope", registration.scope);
+        }).catch(function (err) {
+          console.error("Something went wrong with SW!!", err);
+        });
+      } catch (e) {
+        console.error("SW registration failed!", e);
+      }
+    });
+  }
+}
 
 if (module.hot) {
   //dev mode
@@ -37329,9 +37196,9 @@ if (module.hot) {
   module.hot.accept();
 } else {
   // production mode
-  serviceWorker.register();
+  registerSW();
 }
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./game":"game.jsx","./serviceWorker":"serviceWorker.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./game":"game.jsx","./sw.js":[["sw.js","sw.js"],"sw.js.map","sw.js"]}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -37359,7 +37226,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "46425" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38727" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
