@@ -6664,28 +6664,12 @@ var _react = _interopRequireDefault(require("react"));
 
 var _reactDom = _interopRequireDefault(require("react-dom"));
 
-var _styledComponents = _interopRequireDefault(require("styled-components"));
-
 var _game = _interopRequireDefault(require("./game"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n  color: darkgoldenrod;\n  text-decoration: underline;\n"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-var StyledText = _styledComponents.default.p(_templateObject());
-
 var App = function App() {
-  return _react.default.createElement("div", null, _react.default.createElement("h1", null, "React parcel starter"), _react.default.createElement(StyledText, null, "This text is styled with styled components :)"));
+  return _react.default.createElement(_game.default, null);
 };
 
 _reactDom.default.render(_react.default.createElement(App, null), document.getElementById("root"));
@@ -6715,5 +6699,5 @@ if (module.hot) {
   // production mode
   registerSW();
 }
-},{"react":"1n8/","react-dom":"NKHc","styled-components":"tFSs","./game":"frDw","./sw.js":[["sw.js","NqYy"],"sw.js.map","NqYy"]}]},{},["/deH"], null)
-//# sourceMappingURL=/src.450b8977.js.map
+},{"react":"1n8/","react-dom":"NKHc","./game":"frDw","./sw.js":[["sw.js","NqYy"],"sw.js.map","NqYy"]}]},{},["/deH"], null)
+//# sourceMappingURL=/src.a85eef1a.js.map

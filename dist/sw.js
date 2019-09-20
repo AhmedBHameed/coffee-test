@@ -119,16 +119,17 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   return newRequire;
 })({"NqYy":[function(require,module,exports) {
 var cacheName = "Caffee-v1";
-var urlsToCache = ["/", "/index.html", "/cup_*", "/manifest.js", "/*"];
+var urlsToCache = ["/", "/index.html", "/src.a85eef1a.js", "/src.aed7bf18.css", "/cup_empty.62c83817.png", "/cup_fill_1.a3d8b51e.png", "/cup_fill_2.606cb127.png", "/cup_full.867df466.png", "/cup_too_full.7fa8829d.png"];
 self.addEventListener("install", function (e) {
   console.log("Installing SW!");
-  e.waitUntil(caches.open(cacheName).then(function (cache) {
+  return e.waitUntil(caches.open(cacheName).then(function (cache) {
     return cache.addAll(urlsToCache);
   }));
 });
 self.addEventListener("activate", function (e) {
   // We can use it here to delete old versions of the app.
   console.log("Activating the service worker!");
+  event.waitUntil(self.clients.claim());
 });
 
 function cacheFirst(req) {
@@ -152,15 +153,20 @@ function networkAndCache(req) {
   });
 }
 
-self.addEventListener("fetch", function (e) {
-  var req = e.request;
-  var url = new URL(req.url);
-
-  if (url.origin === location.origin) {
-    return e.respondWith(cacheFirst(req));
-  } else {
-    return e.respondWith(networkAndCache(req));
-  }
-});
+self.addEventListener("fetch", function (event) {
+  event.respondWith(caches.match(event.request, {
+    ignoreSearch: true
+  }).then(function (response) {
+    return response || fetch(event.request);
+  }));
+}); // function(e) {
+//   const req = e.request;
+//   const url = new URL(req.url);
+//   if (url.origin === location.origin) {
+//     return e.respondWith(cacheFirst(req));
+//   } else {
+//     return e.respondWith(networkAndCache(req));
+//   }
+// });
 },{}]},{},["NqYy"], null)
 //# sourceMappingURL=/sw.js.map

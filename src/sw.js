@@ -1,10 +1,20 @@
 const cacheName = "Caffee-v1";
 
-const urlsToCache = ["/", "/index.html", "/cup_*", "/manifest.js", "/*"];
+const urlsToCache = [
+  "/",
+  "/index.html",
+  "/src.a85eef1a.js",
+  "/src.aed7bf18.css",
+  "/cup_empty.62c83817.png",
+  "/cup_fill_1.a3d8b51e.png",
+  "/cup_fill_2.606cb127.png",
+  "/cup_full.867df466.png",
+  "/cup_too_full.7fa8829d.png"
+];
 
 self.addEventListener("install", function(e) {
   console.log("Installing SW!");
-  e.waitUntil(
+  return e.waitUntil(
     caches.open(cacheName).then(function(cache) {
       return cache.addAll(urlsToCache);
     })
@@ -14,41 +24,13 @@ self.addEventListener("install", function(e) {
 self.addEventListener("activate", e => {
   // We can use it here to delete old versions of the app.
   console.log("Activating the service worker!");
+  event.waitUntil(self.clients.claim());
 });
 
-function cacheFirst(req) {
-  caches.open(cacheName).then(function(cache) {
-    cache.match(req).then(function(cached) {
-      return cached || fetch(req);
-    });
-  });
-}
-
-function networkAndCache(req) {
-  return caches
-    .open(cacheName)
-    .then(function(cache) {
-      fetch(req)
-        .then(function(fresh) {
-          cache.put(req, fresh.clone());
-          return fresh;
-        })
-        .catch(function(err) {
-          console.error("Fetch error", err);
-        });
+self.addEventListener("fetch", event => {
+  event.respondWith(
+    caches.match(event.request, { ignoreSearch: true }).then(response => {
+      return response || fetch(event.request);
     })
-    .catch(function(err) {
-      console.error("Caches error", err);
-    });
-}
-
-self.addEventListener("fetch", function(e) {
-  const req = e.request;
-  const url = new URL(req.url);
-
-  if (url.origin === location.origin) {
-    return e.respondWith(cacheFirst(req));
-  } else {
-    return e.respondWith(networkAndCache(req));
-  }
+  );
 });
