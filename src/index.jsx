@@ -7,12 +7,7 @@ const StyledText = styled.p`
   color: darkgoldenrod;
   text-decoration: underline;
 `;
-const App = () => (
-  <div>
-    <h1>React parcel starter</h1>
-    <StyledText>This text is styled with styled components :)</StyledText>
-  </div>
-);
+const App = () => <Game />;
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
@@ -38,6 +33,7 @@ function registerSW() {
   }
 }
 
+console.log(module.hot);
 if (module.hot) {
   //dev mode
   ReactDOM.render(<Game />, document.getElementById("root"));

@@ -4,9 +4,11 @@ Simple game for demonstration.
 
 ![game demo](./src/assets/coffee_game.gif)
 
-# react-parcel-starter
+# Installation
 
-A React parcel starter project
+- `git clone https://github.com/AhmedBHameed/coffee-test`
+- `npm install` OR `yarn`
+- `yarn start`
 
 ## What's included
 
@@ -17,15 +19,10 @@ A React parcel starter project
 
 ## Usage
 
-### Building
+Drink as much coffee as you can without overflow it. Till you get drunk with good stuff of coffee ;)
 
-To start the development server with hot module reloading, run:
+## Some hurdles
 
-- `npm start`
+- I guess the boiler plate is old and using `parcel` which causing an issue on `build` that i could not solve it due to some constrains of the demonstration owner. I would suggest to apply the game with the newest React boiler plate since they use either `babel` or `typescript` or other task bundler.
 
-To build for production
-
-- first remove the folders `dist` and `.cache`
-- then run: `npm run build`
-
-_Note, parcel is currently unable to support minfication os ES2015 code—github.com/parcel-bundler/parcel/issues/8_
+- I tried to do PWA but with no success! The process was giving an error that even with search i did not find useful info regarding. The error was `DOMExpection`
