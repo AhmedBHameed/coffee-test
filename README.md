@@ -1,6 +1,6 @@
 # Drunk with Coffee game
 
-Simple game for demonstration.
+Simple game for demonstration. [Play now](https://kakiee.at/coffee-challenge/)
 
 ![game demo](./src/assets/coffee_game.gif)
 
@@ -32,6 +32,6 @@ Drink as much coffee as you can without overflow it. Till you get drunk with goo
 - Since i'm new to PWA, I did a basic programming part related. Hope that it will work on your side as it worked on mine. PWA is a big topic and i believe there are many parts in the code can be handel in a better way.
 
 - Regarding to the game itself, I would do some refactoring parts for the components. But since the test did not say about performance, i just make it work and functional.
-  What i mean by performance is that the timer for example is applied for all cups which is using render for each cup component. As a feature step fo the app i can move up the timer to the parent component and handel it with events when needed.
+  What i mean by performance is that the timer for example is applied for all cups which is using render for each cup component. As a feature step for the app i can move up the timer to the parent component and handel it with events when needed.
 
-- If you see some difference in `package.json` that comes from trying and error using parcel bundler to see where the problem of the error code mentioned up comes from. A point of prove about it - you can check other branch `app/webpack` as webpack applied on the application for better bundling options and structure but it is not complete.
+- If you see some difference in `package.json` that comes from try and error using parcel bundler to see where the problem of the error code mentioned up comes from. A point of prove about it - you can check other branch `app/webpack` as webpack applied on the application for better bundling options and structure but it is not complete.
