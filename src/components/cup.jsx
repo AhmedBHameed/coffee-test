@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
+
+// Assets
 import cup_empty from "../assets/cup_empty.png";
 import cup_fill_1 from "../assets/cup_fill_1.png";
 import cup_fill_2 from "../assets/cup_fill_2.png";
@@ -21,8 +23,12 @@ const CupButton = styled.button`
 `;
 
 const TimerWrapper = styled.span`
-  font-size: 40px;
+  font-size: 32px;
   color: blue;
+`;
+
+const Img = styled.img`
+  width: 70px;
 `;
 
 export default class Cup extends React.Component {
@@ -34,17 +40,11 @@ export default class Cup extends React.Component {
       timeout: this.initTimeout(),
       timer: 0,
       stepTimer: 0,
-      assetArray: [cup_empty, cup_fill_1, cup_fill_2, cup_fill_2, cup_too_full],
+      assetArray: [cup_empty, cup_fill_1, cup_fill_2, cup_full, cup_too_full],
       overflow: false
     };
-    this.chrono = setInterval(
-      () =>
-        this.setState({
-          timer: this.state.timer + 0.01,
-          stepTimer: this.state.stepTimer + 0.01
-        }),
-      10
-    );
+    this.gameScore = 0;
+    this.setTimeInterval();
     this.setTimeout();
     this.emptyCup = this.emptyCup.bind(this);
     this.fillCup = this.fillCup.bind(this);
@@ -55,27 +55,42 @@ export default class Cup extends React.Component {
     this.DOMElement.addEventListener("gameOver", this.props.handleGameOver);
   }
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps(newProps) {
     // I can control pause and play using this cycle
-    console.log(this.props);
+    this.pauseOrPlayGame(newProps);
   }
 
-  pauseOrPlayGame() {
-    //   I test the program with pause and play here but i could not finish it in time!!
-    // setTimeout(() => {
-    // 	this.pauseTimer();
-    //   }, 1500);
-    //   setTimeout(() => {
-    // 	this.chrono = setInterval(
-    // 	  () =>
-    // 		this.setState({
-    // 		  timer: this.state.timer + 0.01,
-    // 		  stepTimer: this.state.stepTimer + 0.01
-    // 		}),
-    // 	  10
-    // 	);
-    // 	this.setTimeout();
-    //   }, 3000);
+  setTimeout() {
+    this.stepChrono = setTimeout(() => this.fillCup(), this.state.timeout);
+  }
+
+  setTimeInterval() {
+    this.chrono = setInterval(() => {
+      this.setState({
+        timer: this.state.timer + 0.01,
+        stepTimer: this.state.stepTimer + 0.01
+      });
+    }, 10);
+  }
+
+  pauseOrPlayGame(newProps) {
+    const { isGameover, gamePause } = newProps;
+    if (isGameover || gamePause) {
+      clearInterval(this.chrono);
+      clearTimeout(this.stepChrono);
+      this.setHighScore();
+    } else if (!isGameover) {
+      this.setTimeInterval();
+      this.setTimeout();
+    }
+  }
+
+  setHighScore() {
+    const oldHighScore = localStorage.getItem("highScore") || 0;
+    const newHightScore = +(+this.gameScore > oldHighScore
+      ? this.gameScore
+      : oldHighScore);
+    localStorage.setItem("highScore", newHightScore);
   }
 
   initTimeout() {
@@ -109,7 +124,8 @@ export default class Cup extends React.Component {
   }
 
   emptyCup() {
-    if (!this.state.overflow)
+    const { gamePause, isGameover } = this.props;
+    if (!isGameover && !gamePause && !this.state.overflow)
       this.setState({
         assetNumber: 0,
         coeff: this.props.defaultTimeout,
@@ -117,17 +133,19 @@ export default class Cup extends React.Component {
       });
   }
 
-  setTimeout() {
-    this.stepChrono = setTimeout(() => this.fillCup(), this.state.timeout);
+  renderTimer() {
+    const time = Math.round(this.state.timer * 100) / 100;
+    this.gameScore = time.toFixed(2);
+    return this.gameScore;
   }
 
   render() {
     return (
       <CupWrapper>
         <CupButton onClick={this.emptyCup}>
-          <img src={this.state.assetArray[this.state.assetNumber]} />
+          <Img src={this.state.assetArray[this.state.assetNumber]} />
         </CupButton>
-        <TimerWrapper>{Math.round(this.state.timer * 100) / 100}s</TimerWrapper>
+        <TimerWrapper>{this.renderTimer()}s</TimerWrapper>
       </CupWrapper>
     );
   }

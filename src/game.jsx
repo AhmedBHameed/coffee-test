@@ -1,48 +1,27 @@
 import React from "react";
-import Cup from "./components/cup.jsx";
 import Settings from "./components/settings.jsx";
 import Description from "./components/description.jsx";
 import styled from "styled-components";
 import "./stylesheet/game.css";
 
+// Components
+import Container from "./components/container";
+import FlexWrapper from "./components/flex-wrapper";
+import NavBar from "./components/nav-bar";
+import GameWrapper from "./components/game-wapper";
+
 // Assets
 import cup_too_full from "./assets/cup_too_full.png";
 
-const ColumnFlex = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const CupFlex = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-`;
-
-const NavBar = styled.header`
-  display: flex;
-  width: 100%;
-  background: gray;
-  color: white;
-  padding: 0.5rem;
-  .gameLogo {
-    width: 25px;
-    margin-left: 10px;
-  }
-`;
-
-const Row = styled.div`
-  display: flex;
-  padding: 15px;
-  height: 100vh;
+const FlexBox = styled(FlexWrapper)`
   align-items: center;
   justify-content: center;
+  flex-grow: 1;
 `;
 
-const GameOver = styled.h2`
-  color: red;
+const FlexBoxWrapper = styled(FlexWrapper)`
+  flex-direction: column;
+  margin: 0;
 `;
 
 export default class Game extends React.Component {
@@ -71,7 +50,9 @@ export default class Game extends React.Component {
     };
     this.handleStart = this.handleStart.bind(this);
     this.updateNbCups = this.updateNbCups.bind(this);
-    this.handleGameOver = this.handleGameOver.bind(this);
+
+    this.setGameOver = this.setGameOver.bind(this);
+    this.setSettings = this.setSettings.bind(this);
   }
 
   updateNbCups(e) {
@@ -84,55 +65,18 @@ export default class Game extends React.Component {
       newVal = 1;
     }
     this.setState({ nbCups: newVal });
-
-    console.log(newVal);
   }
 
   renderSettings() {
     return (
-      <Row>
-        <Settings
-          nbCups={this.state.nbCups}
-          incNbCups={this.state.incNbCups}
-          decNbCups={this.state.decNbCups}
-          handleCupNb={this.updateNbCups}
-          onStart={this.handleStart}
-        />
-      </Row>
+      <Settings
+        nbCups={this.state.nbCups}
+        incNbCups={this.state.incNbCups}
+        decNbCups={this.state.decNbCups}
+        handleCupNb={this.updateNbCups}
+        onStart={this.handleStart}
+      />
     );
-  }
-
-  gameActions() {
-    const { gameover } = this.state;
-    return (
-      <React.Fragment>
-        {gameover && (
-          <ColumnFlex className="columnFlex">
-            <GameOver>GAME OVER</GameOver>
-            <button className="actionButton" onClick={this.handleStart}>
-              Retry
-            </button>
-            <button
-              className="actionButton"
-              onClick={() =>
-                this.setState({ gameTime: false, descriptionTime: false })
-              }
-            >
-              Change settings
-            </button>
-          </ColumnFlex>
-        )}
-        {!gameover && (
-          <button className="actionButton">
-            {this.state.gameTime ? "Pause" : "Play"}
-          </button>
-        )}
-      </React.Fragment>
-    );
-  }
-
-  handleGameOver() {
-    this.setState({ gameover: true });
   }
 
   renderDescription() {
@@ -163,41 +107,50 @@ export default class Game extends React.Component {
     });
   }
 
-  renderCups() {
-    let cups = [];
-    for (var i = 0; i < this.state.nbCups; i++) {
-      cups.push(
-        <Cup
-          handleGameOver={this.handleGameOver}
-          defaultTimeout={this.state.defaultTimeout}
-        />
-      );
-    }
-    return <CupFlex>{cups}</CupFlex>;
+  setGameOver(gameoverState) {
+    this.setState({
+      gameover: gameoverState
+    });
+  }
+  setSettings() {
+    this.setState({ gameTime: false, descriptionTime: false });
   }
 
   render() {
-    const { gameTime, descriptionTime, restartGame } = this.state;
+    const {
+      gameTime,
+      descriptionTime,
+      restartGame,
+      defaultTimeout,
+      gameover,
+      nbCups,
+      highestScore
+    } = this.state;
 
     return (
-      <section className="pageContainer">
-        <NavBar>
-          <div className="headerWrapper_brand">Coffee game</div>
-          <div className="headerWrapper_logo">
-            <img src={cup_too_full} alt="caffee" className="gameLogo" />
-          </div>
-        </NavBar>
-        <Row>
-          {gameTime && (
-            <ColumnFlex>
-              {restartGame && this.renderCups()}
-              {this.gameActions()}
-            </ColumnFlex>
-          )}
-          {descriptionTime && this.renderDescription()}
-          {!gameTime && !descriptionTime && this.renderSettings()}
-        </Row>
-      </section>
+      <FlexBoxWrapper>
+        <NavBar imgSrc={cup_too_full} gameover={gameover} />
+        <Container>
+          <FlexBox>
+            {gameTime &&
+              (restartGame && (
+                <GameWrapper
+                  nbCups={nbCups}
+                  gameover={gameover}
+                  gameTime={gameTime}
+                  descriptionTime={descriptionTime}
+                  defaultTimeout={defaultTimeout}
+                  setGameOver={this.setGameOver}
+                  setSettings={this.setSettings}
+                  handleStart={this.handleStart}
+                  setHighestScore={this.setHighestScore}
+                />
+              ))}
+            {descriptionTime && this.renderDescription()}
+            {!gameTime && !descriptionTime && this.renderSettings()}
+          </FlexBox>
+        </Container>
+      </FlexBoxWrapper>
     );
   }
 }

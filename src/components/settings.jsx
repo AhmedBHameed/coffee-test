@@ -7,10 +7,9 @@ const CupSettings = styled.div`
 
   input {
     font-size: 32px;
-    padding: 5px;
+    padding: 2px 0;
     text-align: center;
-    border: 1px solid black;
-    outline: 0;
+    width: 100%;
   }
   .cup-num-input {
     display: flex;
@@ -50,7 +49,7 @@ const CupSettings = styled.div`
     width: 45%;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
   }
 `;
 
